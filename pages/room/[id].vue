@@ -4,13 +4,22 @@ const route = useRoute();
 
 const { id } = route.params;
 
+
+const bookingStore = useBookingStore();
+const { bookingInfo } = storeToRefs(bookingStore)
+
 // 將房型資料 data 改成使用 Pinia 管理
 const { data, error } = await useAsyncData(`room-data`, async () => {
   const response = await $fetch(`/rooms/${id}`, {
     baseURL: "https://nuxr3.zeabur.app/api/v1",
   });
-  return response.result;
+
+  const {result} = response
+  bookingStore.setBookingData(result);
+  return response;
 });
+// console.log(data.value)
+
 
 if (error.value) {
   alert("發生錯誤 ! ");
